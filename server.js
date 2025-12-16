@@ -3,11 +3,16 @@ const mongoose = require('mongoose');
 const app = express();
 const path = require('path');
 require("dotenv").config();
+const cors = require('cors');
 // Middleware
 
 app.use(express.json({ limit: "3mb" })); // JSON body limit
 app.use(express.urlencoded({ extended: true, limit: "3mb" })); // URL-encoded limit
-
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']   
+}))
 
 
 // Importing routes
