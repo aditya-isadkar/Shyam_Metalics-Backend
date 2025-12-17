@@ -7,7 +7,7 @@ const createPolicy = async (req, res) => {
     const { policy_name, policy_date } = req.body;
 
     // Validate
-    if (!policy_name || !policy_date || !req.file) {
+    if (!policy_name || !policy_date) {
       return res.status(400).json({
         message: "Please provide policy_name, policy_date, and file",
       });
@@ -44,9 +44,16 @@ const createPolicy = async (req, res) => {
 // Get all Policies
 const getAllPolicies = async (req, res) => {
   try {
-    const policyData = await PolicyModel.findOne().sort({"policyDetails.policy_date":-1});
+    const policyData = await PolicyModel.findOne().sort({
+      "policyDetails.policy_name": 1, // A → Z
+    });
 
-    if (!policyData) {
+    const sortedPolicies = policyData.policyDetail.sort((a, b) =>
+      a.policy_name.localeCompare(b.policy_name)
+    );
+
+
+    if (!sortedPolicies || sortedPolicies.length === 0) {
       return res.status(404).json({
         message: "No policies found",
         data: [],
@@ -55,7 +62,7 @@ const getAllPolicies = async (req, res) => {
 
     res.status(200).json({
       message: "Policies fetched successfully",
-      data: policyData.policyDetail,
+      data: sortedPolicies,
     });
   } catch (error) {
     console.error("Error fetching policies:", error);

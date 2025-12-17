@@ -8,7 +8,7 @@ router.get('/p' , (req , res)=>{
 })
 
 
-router.post("/add_policy" ,upload.single("policy_file"), createPolicy);
+router.post("/add_policy" ,upload.single("file"), createPolicy);
 router.get("/get_policy" , getAllPolicies);
 
 

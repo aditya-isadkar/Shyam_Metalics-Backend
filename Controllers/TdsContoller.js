@@ -2,10 +2,12 @@ const uploadToS3 = require("../config/s3Uploader");
 const TdsModel = require("../Model/TdsDeclarationModel");
 
 const createTds = async (req, res) => {
-  const { tds_name, tds_date, tds_file } = req.body;
-
+  const { tds_name, tds_date } = req.body;
+  console.log("Received TDS data:", req.body);
+  console.log("Received file:", req.body.tds_date);
+  console.log("File info:", req.body.tds_name);
   // validation
-  if (!tds_name || !tds_date || !tds_file) {
+  if (!tds_name || !tds_date) {
     return res.status(400).json({
       message: "Please provide tds_name, tds_date, and tds_file",
     });
