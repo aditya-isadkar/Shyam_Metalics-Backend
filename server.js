@@ -41,6 +41,7 @@ const InvestorInformationRouter = require("./Routes/InvestorInformationRoutes");
 const OtherRouter = require("./Routes/OtherRoutes");
 const NewsRouter = require("./Routes/EventNewsRoute");
 const StoriesRouter = require("./Routes/EventStoriesRoute");
+const blogRouter = require("./Routes/BlogRoute");
 
 app.get("/", (req, res) => {
     res.send("Hello! Backend of Shyam Metalics is running.");
@@ -64,6 +65,8 @@ app.use("/investor-information", InvestorInformationRouter);
 app.use("/other", OtherRouter);
 app.use("/news", NewsRouter);
 app.use("/stories", StoriesRouter);
+app.use("/blog", blogRouter);
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
