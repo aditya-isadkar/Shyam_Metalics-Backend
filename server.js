@@ -42,7 +42,7 @@ const OtherRouter = require("./Routes/OtherRoutes");
 const NewsRouter = require("./Routes/EventNewsRoute");
 const StoriesRouter = require("./Routes/EventStoriesRoute");
 const blogRouter = require("./Routes/BlogRoute");
-
+const DisclosureRoute = require("./Routes/DisclosuresRoute");
 app.get("/", (req, res) => {
     res.send("Hello! Backend of Shyam Metalics is running.");
 });
@@ -66,6 +66,7 @@ app.use("/other", OtherRouter);
 app.use("/news", NewsRouter);
 app.use("/stories", StoriesRouter);
 app.use("/blog", blogRouter);
+app.use("/disclosure" , DisclosureRoute);
 
 
 const PORT = process.env.PORT || 3000;
