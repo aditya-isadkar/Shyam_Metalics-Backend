@@ -29,7 +29,7 @@ router.delete("/delete/:id", (req, res, next) => {
 router.get("/applications/:jobId", getApplications);
 router.post("/apply", upload.single("resume"), applyJob);
 router.get("/applications/job/:jobId", getApplicationsByJobId);
-router.put("/applications/update/:id", updateApplication);
+router.put("/applications/update/:id",(req , res , next)=>{console.log("hello keshu"); next()} ,  updateApplication);
 router.delete("/applications/delete/:id", deleteApplication);
 
 // ========================

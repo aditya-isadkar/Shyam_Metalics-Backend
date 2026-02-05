@@ -29,21 +29,24 @@ const addJob = async (req, res) => {
 
 // Update job
 const updateJob = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { title, description, location } = req.body;
-        const img = req.file ? req.file.filename : undefined;
-        const url = await uploadToS3(req.file, "jobs");
-        const updatedJob = await Job.findByIdAndUpdate(
-            id,
-            { title, description, location, ...(img && { img }) },
-            { new: true }
-        );
+  try {
+    const { id } = req.params;
+    const { title, description, location, salary } = req.body;
 
-        res.status(200).json({ message: "Job updated", job: updatedJob });
-    } catch (error) {
-        res.status(500).json({ message: "Error updating job", error });
+    let updateData = { title, description, location, salary };
+
+    // Only update image if a file is uploaded
+    if (req.file) {
+      const url = await uploadToS3(req.file, "jobs");
+      updateData.img = url;
     }
+
+    const updatedJob = await Job.findByIdAndUpdate(id, updateData, { new: true });
+
+    res.status(200).json({ message: "Job updated", job: updatedJob });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating job", error });
+  }
 };
 
 // Delete job
@@ -115,7 +118,8 @@ const applyJob = async (req, res) => {
 const updateApplication = async (req, res) => {
   try {
     const { id } = req.params;
-
+    console.log("hello keshu");
+    console.log("calling the update application" , id);
     const updated = await JobApplication.findByIdAndUpdate(
       id,
       req.body,
