@@ -1,5 +1,5 @@
 const QIPModel = require("../Model/QipModel");
-const { uploadtoS3 } = require("../config/s3Uploader");
+const uploadtoS3 = require("../config/s3Uploader");
 
 const createQip = async (req, res) => {
   try {

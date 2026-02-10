@@ -87,11 +87,12 @@ const deleteById = async (req, res) => {
 const updateInvestorAnalyst = async (req, res) => {
   const { id } = req.params;
   const { titlename, investor_analyst_name, investor_analyst_date } = req.body;
-
+  console.log("Update request received for ID:", id);
   if (!id) return res.status(400).json({ message: "Detail ID is required" });
 
   try {
     const parent = await InvestorAnalyst.findOne({ "investor_analyst_details._id": id });
+    console.log("Parent document found for update:", parent);
     if (!parent) return res.status(404).json({ message: "Item not found" });
 
     const updateFields = {};
