@@ -76,6 +76,7 @@ app.use("/auth", require("./Routes/AuthRoutes"));
 app.use("/logs", require("./Routes/ActivityLogRoute"));
 app.use("/inquiries" , require("./Routes/ContactRoute"));
 app.use("/distributors" , require("./Routes/distributorRoute"))
+app.use("/distributor-providers" , require("./Routes/distubutorProviderRoutes"))
 /* =========================================================
    ✅ AUTH MIDDLEWARE (POST / PUT / DELETE protected)
 ========================================================= */

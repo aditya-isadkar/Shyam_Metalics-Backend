@@ -1,36 +1,57 @@
 const mongoose = require("mongoose");
-const InvestorAnalyst = require("./Model/InvestorAnlystModel");
+const XLSX = require("xlsx");
+const Distributor = require("./Model/distributorModel");
 
-(async () => {
+// 🔹 MongoDB Connection
+mongoose
+  .connect("mongodb+srv://keshukumar_db_user:9340179767@shyammetalics.w9eivc3.mongodb.net/?appName=ShyamMetalics")
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => console.log(err));
+
+
+// 🔹 Function to Convert to Proper Case
+// Example: west bengal → West Bengal
+function toProperCase(text) {
+  if (!text) return "";
+
+  return text
+    .toLowerCase()
+    .split(" ")
+    .map(word =>
+      word.charAt(0).toUpperCase() + word.slice(1)
+    )
+    .join(" ");
+}
+
+
+// 🔹 Read Excel File
+const workbook = XLSX.readFile("Active Distributor List.xlsx"); // your file name
+const sheetName = workbook.SheetNames[0];
+const sheet = workbook.Sheets[sheetName];
+
+const data = XLSX.utils.sheet_to_json(sheet);
+
+
+// 🔹 Import Function
+const importData = async () => {
   try {
-    await mongoose.connect(
-      "mongodb+srv://keshukumar_db_user:9340179767@shyammetalics.w9eivc3.mongodb.net/?appName=ShyamMetalics"
-    );
 
-    const docs = await InvestorAnalyst.find({
-      "investor_analyst_details._id": { $exists: false }
-    });
+    const formattedData = data.map(row => ({
+      state: toProperCase(row["STATE"]),
+      district: toProperCase(row["District"]),
+      name: toProperCase(row["DISTRIBUTOR Name"]),
+      number: row["Contact Number"]?.toString().trim()
+    }));
 
-    for (const doc of docs) {
-      let changed = false;
+    await Distributor.insertMany(formattedData);
 
-      doc.investor_analyst_details.forEach(item => {
-        if (!item._id) {
-          item._id = new mongoose.Types.ObjectId();
-          changed = true;
-        }
-      });
+    console.log("✅ Data Imported Successfully");
+    process.exit();
 
-      if (changed) {
-        await doc.save({ validateBeforeSave: false });
-        console.log("Updated:", doc._id.toString());
-      }
-    }
-
-    console.log("Migration completed ✅");
-    process.exit(0);
-  } catch (err) {
-    console.error("Migration failed ❌", err);
+  } catch (error) {
+    console.error("❌ Error:", error);
     process.exit(1);
   }
-})();
+};
+
+importData();
