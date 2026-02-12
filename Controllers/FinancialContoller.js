@@ -7,27 +7,22 @@ const addFinancialDetail = async (req, res) => {
     const { option, name, date } = req.body;
 
     // Validation
-    if (!option || !name || !date || !req.file) {
-      return res.status(400).json({
-        message: "Please provide option, name, date, and file",
-      });
+    if (!option || !name || !date) {
+      return res.status(400).json({ message: "Please provide option, name and date" });
     }
 
-    // Upload file to S3
-    const fileUrl = await uploadtoS3(req.file);
+    // Upload file if provided
+    let fileUrl = null;
+    if (req.file) {
+      fileUrl = await uploadtoS3(req.file);
+    }
+
+    const detailObj = { name, date, file: fileUrl, heading: req.body.heading || null };
 
     // Save in DB
     const updatedFinancial = await FinancialModel.findOneAndUpdate(
       { option },
-      {
-        $push: {
-          details: {
-            name,
-            date,
-            file: fileUrl // save S3 URL
-          }
-        }
-      },
+      { $push: { details: detailObj } },
       { new: true, upsert: true }
     );
 
@@ -92,8 +87,11 @@ const deleteById = async (req, res) => {
 
 
 const updateFinancialDetail = async (req, res) => {
+  
   const { id } = req.params;
   const { name, date } = req.body;
+  console.log("Updating financial detail with id:", id);
+  console.log("Received data:", { name, date, file: req.file });
 
   if (!id) {
     return res.status(400).json({
@@ -117,14 +115,13 @@ const updateFinancialDetail = async (req, res) => {
     const updateFields = {};
     if (name) updateFields["details.$.name"] = name;
     if (date) updateFields["details.$.date"] = date;
+    if (req.body.heading) updateFields["details.$.heading"] = req.body.heading;
 
     // Upload new file if provided
     if (req.file) {
       const fileUrl = await uploadtoS3(req.file);
       if (!fileUrl) {
-        return res.status(500).json({
-          message: "File upload failed",
-        });
+        return res.status(500).json({ message: "File upload failed" });
       }
       updateFields["details.$.file"] = fileUrl;
     }

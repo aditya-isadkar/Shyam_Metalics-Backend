@@ -9,11 +9,11 @@ router.get('/s', (req, res) => {
 });
 
 // create sebi
-router.post("/add_sebi",upload.single("sebi_file"), createSebi);
+router.post("/add_sebi",upload.single("file"), createSebi);
 
 // get all sebi details
 router.get("/get_sebi", getSebi);
 router.delete("/delete" , deleteById);
-router.put("/update_sebi/:id", upload.single("sebi_file"), updateSebiById);
+router.put("/update_sebi/:id", upload.single("file"), updateSebiById);
 
 module.exports = router;

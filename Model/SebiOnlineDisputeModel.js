@@ -10,11 +10,15 @@ const SebiSchema = new mongoose.Schema(
         },
         sebi_date: {
           type: String,
-          required: [true, "Please Enter the sebi date"],
+          required: false,
         },
         sebi_file: {
           type: String,
-          required: [true, "Please enter the sebi file data"],
+          required: false,
+        },
+        extra_link: {
+          type: String,
+          required: false,
         },
       },
     ],
