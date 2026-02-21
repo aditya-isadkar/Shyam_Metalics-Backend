@@ -18,8 +18,8 @@ const app = express();
 ========================================================= */
 
 // Body parsers (DO NOT SKIP multipart here ❗)
-app.use(express.json({ limit: "3mb" }));
-app.use(express.urlencoded({ extended: true, limit: "3mb" }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 // CORS
 app.use(
@@ -74,9 +74,9 @@ app.use("/extra", require("./Routes/uploadRoute"));
 // Auth & Logs
 app.use("/auth", require("./Routes/AuthRoutes"));
 app.use("/logs", require("./Routes/ActivityLogRoute"));
-app.use("/inquiries" , require("./Routes/ContactRoute"));
-app.use("/distributors" , require("./Routes/distributorRoute"))
-app.use("/distributor-providers" , require("./Routes/distubutorProviderRoutes"))
+app.use("/inquiries", require("./Routes/ContactRoute"));
+app.use("/distributors", require("./Routes/distributorRoute"))
+app.use("/distributor-providers", require("./Routes/distubutorProviderRoutes"))
 /* =========================================================
    ✅ AUTH MIDDLEWARE (POST / PUT / DELETE protected)
 ========================================================= */
@@ -106,27 +106,27 @@ app.get("/stock", async (req, res) => {
       status: "success",
       nse: nseQuote
         ? {
-            symbol: nseQuote.symbol,
-            shortName: nseQuote.shortName,
-            currentPrice: nseQuote.regularMarketPrice,
-            high: nseQuote.regularMarketDayHigh,
-            low: nseQuote.regularMarketDayLow,
-            prevClose: nseQuote.regularMarketPreviousClose,
-            change: nseQuote.regularMarketChange,
-            changePercent: nseQuote.regularMarketChangePercent,
-          }
+          symbol: nseQuote.symbol,
+          shortName: nseQuote.shortName,
+          currentPrice: nseQuote.regularMarketPrice,
+          high: nseQuote.regularMarketDayHigh,
+          low: nseQuote.regularMarketDayLow,
+          prevClose: nseQuote.regularMarketPreviousClose,
+          change: nseQuote.regularMarketChange,
+          changePercent: nseQuote.regularMarketChangePercent,
+        }
         : null,
       bse: bseQuote
         ? {
-            symbol: bseQuote.symbol,
-            shortName: bseQuote.shortName,
-            currentPrice: bseQuote.regularMarketPrice,
-            high: bseQuote.regularMarketDayHigh,
-            low: bseQuote.regularMarketDayLow,
-            prevClose: bseQuote.regularMarketPreviousClose,
-            change: bseQuote.regularMarketChange,
-            changePercent: bseQuote.regularMarketChangePercent,
-          }
+          symbol: bseQuote.symbol,
+          shortName: bseQuote.shortName,
+          currentPrice: bseQuote.regularMarketPrice,
+          high: bseQuote.regularMarketDayHigh,
+          low: bseQuote.regularMarketDayLow,
+          prevClose: bseQuote.regularMarketPreviousClose,
+          change: bseQuote.regularMarketChange,
+          changePercent: bseQuote.regularMarketChangePercent,
+        }
         : null,
     });
   } catch (err) {

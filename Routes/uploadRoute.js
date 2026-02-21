@@ -18,7 +18,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
         return res.status(200).json({ newFile });
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: "Failed to upload file" });
+        return res.status(500).json({ error: "Failed to upload file", details: err.message });
     }
 });
 router.get("/getupload", async (req, res) => {

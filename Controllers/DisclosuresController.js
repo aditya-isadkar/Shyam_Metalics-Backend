@@ -2,7 +2,7 @@ const uploadToS3 = require("../config/s3Uploader");
 const DisclosuresModel = require("../Model/DisclosuresModel");
 
 const createDisclosures = async (req, res) => {
-  const { name, date, mainTitle, extraLink } = req.body;
+  const { name, date, mainTitle, extraLink, sequenceNumber, manualTitle } = req.body;
 
   try {
     let url = null;
@@ -17,6 +17,8 @@ const createDisclosures = async (req, res) => {
       file: url ? "" : extraLink,
       mainTitle: mainTitle || "",
       extraLink: extraLink || "",
+      sequenceNumber: sequenceNumber ? Number(sequenceNumber) : null,
+      manualTitle: manualTitle || "",
     };
 
     const updatedDisclosures = await DisclosuresModel.findOneAndUpdate(
@@ -34,7 +36,7 @@ const createDisclosures = async (req, res) => {
 
 const getDisclosures = async (req, res) => {
   try {
-    const DisclosuresData = await DisclosuresModel.findOne().sort({ "detail.date": -1 });
+    const DisclosuresData = await DisclosuresModel.findOne();
 
     if (!DisclosuresData) {
       return res.status(404).json({
@@ -43,9 +45,16 @@ const getDisclosures = async (req, res) => {
       });
     }
 
+    // Sort by sequenceNumber (nulls last)
+    const sortedData = DisclosuresData.detail.sort((a, b) => {
+      const seqA = a.sequenceNumber != null ? a.sequenceNumber : Infinity;
+      const seqB = b.sequenceNumber != null ? b.sequenceNumber : Infinity;
+      return seqA - seqB;
+    });
+
     res.status(200).json({
       message: "Disclosures fetched successfully",
-      data: DisclosuresData.detail,
+      data: sortedData,
     });
   } catch (error) {
     console.error("Error fetching Disclosures:", error);
@@ -72,7 +81,7 @@ const deleteById = async (req, res) => {
 
 const updateDisclosures = async (req, res) => {
   const { id } = req.params;
-  const { name, date, mainTitle, extraLink } = req.body;
+  const { name, date, mainTitle, extraLink, sequenceNumber, manualTitle } = req.body;
 
   if (!id) {
     return res.status(400).json({
@@ -120,6 +129,14 @@ const updateDisclosures = async (req, res) => {
     // Update extraLink if provided
     if (extraLink !== undefined) {
       updateFields["detail.$.extraLink"] = extraLink;
+    }
+
+    if (sequenceNumber !== undefined) {
+      updateFields["detail.$.sequenceNumber"] = sequenceNumber !== "" ? Number(sequenceNumber) : null;
+    }
+
+    if (manualTitle !== undefined) {
+      updateFields["detail.$.manualTitle"] = manualTitle;
     }
 
     // If nothing to update
